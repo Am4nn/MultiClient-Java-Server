@@ -12,7 +12,7 @@ public record ReadFromServer() implements Runnable {
         try {
             while (true) {
                 string = Client.inputStream.readUTF();
-                Client.gui.write(string);
+                Client.ui.write(string);
             }
         } catch (IOException e) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, e);

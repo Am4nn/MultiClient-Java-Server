@@ -1,6 +1,7 @@
 package Client;
 
-import GUI.Gui;
+import CLI.CLI;
+import UI.UI;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,19 +17,19 @@ public class Client {
     private String portNumber = "3000";
     public static DataInputStream inputStream;
     public static DataOutputStream outputStream;
-    public static Gui gui;
+    public static UI ui;
     public static String name = "newUser";
 
     public Client () {
-        gui = new Gui("Client");
+        ui = new CLI("Client");
         this.init();
         this.startCommunication();
     }
 
     private void init() {
-        String inIP = gui.read("Input IP Address of Server (default=localhost) :");
-        String inPort = gui.read("Input Port Number of Server (default=3000) :");
-        String inName = gui.read("Enter your name :");
+        String inIP = ui.read("Input IP Address of Server (default=localhost) :");
+        String inPort = ui.read("Input Port Number of Server (default=3000) :");
+        String inName = ui.read("Enter your name :");
 
         if (!inIP.isEmpty()) ipAddress = inIP;
         if (!inPort.isEmpty()) portNumber = inPort;

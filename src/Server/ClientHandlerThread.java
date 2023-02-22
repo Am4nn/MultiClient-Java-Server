@@ -1,6 +1,7 @@
 package Server;
 
-import GUI.Gui;
+import CLI.CLI;
+import Client.Client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -14,11 +15,9 @@ public class ClientHandlerThread implements Runnable {
     Socket socket;
     DataInputStream input;
     DataOutputStream output;
-    Gui gui;
 
-    public ClientHandlerThread (Socket socket, Gui gui) {
+    public ClientHandlerThread (Socket socket) {
         this.socket = socket;
-        this.gui = gui;
     }
 
     @Override
@@ -29,14 +28,14 @@ public class ClientHandlerThread implements Runnable {
 
             Server.addClientStream(output);
             String hostName = Integer.toString((int)(Math.floor(Math.random()*1000) + 1));
-            gui.write("Connected" + " -> " + hostName);
+            Server.ui.write("Connected" + " -> " + hostName);
 
             // Read all messages from client and respond
             try {
                 String inStr = "";
                 while (true) {
                     inStr = input.readUTF();
-                    gui.write(inStr);
+                    Client.ui.write(inStr);
                     Server.broadcastMessage(inStr);
                 }
             } catch (IOException e) {
@@ -48,7 +47,7 @@ public class ClientHandlerThread implements Runnable {
             input.close();
             output.close();
             socket.close();
-            gui.write("Disconnected" + " -> " + hostName);
+            Client.ui.write("Disconnected" + " -> " + hostName);
         } catch (IOException e) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, e);
         }

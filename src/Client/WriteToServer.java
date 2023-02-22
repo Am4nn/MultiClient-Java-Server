@@ -1,8 +1,5 @@
 package Client;
 
-import GUI.Gui;
-
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,7 +11,7 @@ public record WriteToServer() implements Runnable {
         String string;
         try {
             while (true) {
-                string = Client.gui.read("");
+                string = Client.ui.read("");
                 Client.outputStream.writeUTF(Client.name + " -> " + string.trim());
             }
         } catch (IOException e) {
