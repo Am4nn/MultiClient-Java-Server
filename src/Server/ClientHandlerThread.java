@@ -28,7 +28,7 @@ public class ClientHandlerThread implements Runnable {
             this.output = new DataOutputStream(socket.getOutputStream());
 
             Server.addClientStream(output);
-            String hostName = socket.getLocalSocketAddress().toString();
+            String hostName = socket.getInetAddress().;
             gui.write("Connected" + " -> " + hostName);
 
             // Read all messages from client and respond
