@@ -28,9 +28,7 @@ public class ClientHandlerThread implements Runnable {
             // Read some initial data like name, etc
             this.name = input.readUTF().trim();
 
-            ClientDetails clientDetails = new ClientDetails(input, output, socket, name);
-
-            Server.addClient(clientDetails);
+            Server.addClient(this);
             Server.ui.write("Connected" + " -> " + name + ", Active Clients : " + Server.getTotalActiveClients());
             Server.broadcastMessage("Connected" + " -> " + name + ", Active Clients -> " + Server.getTotalActiveClients());
 
@@ -51,7 +49,7 @@ public class ClientHandlerThread implements Runnable {
             }
 
             // connection over - cleanup
-            Server.removeClient(clientDetails);
+            Server.removeClient(this);
             input.close();
             output.close();
             socket.close();

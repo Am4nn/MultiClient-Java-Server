@@ -19,14 +19,14 @@ public class Server {
     public static UI ui;
 
     // for multi-client maintain array for outputStream of each client
-    private static final List<ClientDetails> allConnectedClients = new ArrayList<>();
+    private static final List<ClientHandlerThread> allConnectedClients = new ArrayList<>();
     // these methods make changes in a shared variable, hence they should be synchronized
-    synchronized public static void addClient(ClientDetails client) { allConnectedClients.add(client); }
-    synchronized public static void removeClient(ClientDetails client) { allConnectedClients.remove(client); }
+    synchronized public static void addClient(ClientHandlerThread client) { allConnectedClients.add(client); }
+    synchronized public static void removeClient(ClientHandlerThread client) { allConnectedClients.remove(client); }
     synchronized public static void broadcastMessage (String msg) {
-        for (ClientDetails client : allConnectedClients) {
+        for (ClientHandlerThread client : allConnectedClients) {
             try {
-                client.outputStream.writeUTF(msg);
+                client.output.writeUTF(msg);
             } catch (IOException e) {
                 Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, e);
             }
