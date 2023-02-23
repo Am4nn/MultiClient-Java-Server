@@ -1,7 +1,5 @@
 package Server;
 
-import CLI.CLI;
-import Client.Client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,6 +13,7 @@ public class ClientHandlerThread implements Runnable {
     Socket socket;
     DataInputStream input;
     DataOutputStream output;
+    String name;
 
     public ClientHandlerThread (Socket socket) {
         this.socket = socket;
@@ -26,28 +25,38 @@ public class ClientHandlerThread implements Runnable {
             this.input = new DataInputStream(socket.getInputStream());
             this.output = new DataOutputStream(socket.getOutputStream());
 
-            Server.addClientStream(output);
-            String hostName = Integer.toString((int)(Math.floor(Math.random()*1000) + 1));
-            Server.ui.write("Connected" + " -> " + hostName);
+            // Read some initial data like name, etc
+            this.name = input.readUTF().trim();
 
+            ClientDetails clientDetails = new ClientDetails(input, output, socket, name);
+
+            Server.addClient(clientDetails);
+            Server.ui.write("Connected" + " -> " + name + ", Active Clients : " + Server.getTotalActiveClients());
+            Server.broadcastMessage("Connected" + " -> " + name + ", Active Clients -> " + Server.getTotalActiveClients());
+
+            String cause = "";
             // Read all messages from client and respond
             try {
                 String inStr = "";
                 while (true) {
                     inStr = input.readUTF();
-                    Client.ui.write(inStr);
+                    Server.ui.write(inStr);
                     Server.broadcastMessage(inStr);
                 }
             } catch (IOException e) {
-                Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, e);
+                cause = e.getMessage();
+                if (!e.getMessage().equals("Connection reset")) {
+                    Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, e);
+                }
             }
 
             // connection over - cleanup
-            Server.removeClientStream(output);
+            Server.removeClient(clientDetails);
             input.close();
             output.close();
             socket.close();
-            Client.ui.write("Disconnected" + " -> " + hostName);
+            Server.ui.write("Disconnected" + " -> " + name + ", Cause -> " + cause + ", Active Clients -> " + Server.getTotalActiveClients());
+            Server.broadcastMessage("Disconnected" + " -> " + name + ", Cause -> " + cause + ", Active Clients -> " + Server.getTotalActiveClients());
         } catch (IOException e) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, e);
         }

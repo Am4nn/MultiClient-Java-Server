@@ -1,21 +1,21 @@
 package CLI;
 
 import UI.UI;
+
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 
 public class CLI extends UI {
     private final Scanner scanner = new Scanner(System.in);
-    private String key;
 
     public CLI(String name) {
         super();
-        this.key = name;
-        System.out.println(this.key + " GUI Initiated");
+        System.out.println(name + " GUI Initiated");
     }
 
     @Override
-    public String read (String msg) {
+    public String read (String msg) throws NoSuchElementException {
         if (!msg.isEmpty()) {
             System.out.println(msg);
         }

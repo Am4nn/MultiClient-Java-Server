@@ -39,9 +39,14 @@ public class Client {
             socket = new Socket(ipAddress, Integer.parseInt(portNumber));
             inputStream = new DataInputStream(socket.getInputStream());
             outputStream = new DataOutputStream(socket.getOutputStream());
+
+            // send client name and some other imp details if required
+            outputStream.writeUTF(name);
+
         } catch (IOException e) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, e);
         }
+        ui.write("Client Connected with Server on "+ipAddress+":"+portNumber);
     }
 
     private void startCommunication() {
