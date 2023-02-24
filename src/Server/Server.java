@@ -9,14 +9,14 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import CLI.CLI;
-import UI.UI;
+import GUI.GUI;
 
 public class Server {
 
     Socket socket = null;
-    String portNumber = "3000";
+    String portNumber;
     private boolean running = false;
-    public static UI ui;
+    public static GUI ui;
 
     // for multi-client maintain array for outputStream of each client
     private static final List<ClientHandlerThread> allConnectedClients = new ArrayList<>();
@@ -35,10 +35,9 @@ public class Server {
     synchronized public static int getTotalActiveClients () { return allConnectedClients.size(); }
 
     public Server() {
-        ui = new CLI("Server");
+        ui = new GUI("Server");
 
-        String in = ui.read("Enter the Port Number where server should run (default=3000) :");
-        if (!in.isEmpty()) portNumber = in;
+        portNumber = ui.read("Enter the Port Number where server should run", "3000");
 
         this.running = true;
         this.startAcceptingConnections();
@@ -51,9 +50,9 @@ public class Server {
             ui.write("Server listening on port: " + port);
 
             // to listen for server's stdin input and broadcast msg to all clients
-            Thread serverStdinHandlerThread = new Thread(new ServerStdinHandlerThread());
-            serverStdinHandlerThread.setName("server-stdin-listener-thread");
-            serverStdinHandlerThread.start();
+            Thread serverInputHandlerThread = new Thread(new ServerInputHandlerThread());
+            serverInputHandlerThread.setName("server-stdin-listener-thread");
+            serverInputHandlerThread.start();
 
             while (this.running) {
 

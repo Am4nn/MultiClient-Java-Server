@@ -1,7 +1,7 @@
 package Client;
 
 import CLI.CLI;
-import UI.UI;
+import GUI.GUI;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -13,27 +13,23 @@ import java.util.logging.Logger;
 public class Client {
 
     public static Socket socket = null;
-    private String ipAddress = "localhost";
-    private String portNumber = "3000";
+    String ipAddress;
+    String portNumber;
     public static DataInputStream inputStream;
     public static DataOutputStream outputStream;
-    public static UI ui;
-    public static String name = "newUser";
+    public static GUI ui;
+    public static String name;
 
     public Client () {
-        ui = new CLI("Client");
+        ui = new GUI("Client");
         this.init();
         this.startCommunication();
     }
 
     private void init() {
-        String inIP = ui.read("Input IP Address of Server (default=localhost) :");
-        String inPort = ui.read("Input Port Number of Server (default=3000) :");
-        String inName = ui.read("Enter your name :");
-
-        if (!inIP.isEmpty()) ipAddress = inIP;
-        if (!inPort.isEmpty()) portNumber = inPort;
-        if (!inName.isEmpty()) name = inName;
+        ipAddress = ui.read("Input IP Address of Server", "localhost");
+        portNumber = ui.read("Input Port Number of Server", "3000");
+        name = ui.read("Enter your name :");
 
         try {
             socket = new Socket(ipAddress, Integer.parseInt(portNumber));
@@ -43,10 +39,12 @@ public class Client {
             // send client name and some other imp details if required
             outputStream.writeUTF(name);
 
+            ui.write("Client Connected with Server on "+ipAddress+":"+portNumber);
+
         } catch (IOException e) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, e);
+            ui.write(e.getMessage());
         }
-        ui.write("Client Connected with Server on "+ipAddress+":"+portNumber);
     }
 
     private void startCommunication() {

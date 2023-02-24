@@ -1,16 +1,14 @@
 import Client.Client;
 import CLI.CLI;
+import GUI.GUI;
 import Server.Server;
 
-import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
-        CLI CLI = new CLI("Main");
-        String output = CLI.read("Run SERVER or CLIENT ?");
-        switch (output.toLowerCase(Locale.ROOT)) {
-            case "server", "s", "1" -> new Server();
-            case "client", "c", "2" -> new Client();
-        }
+        int option = GUI.selectClientOrServer();
+        if (option == 0) new Server();
+        else if (option == 1) new Client();
+        else System.out.println("Good Bye");
     }
 }
